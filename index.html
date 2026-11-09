@@ -14,17 +14,17 @@
 <div class="dust" id="dust" aria-hidden="true"></div><div class="nav" id="nav" hidden><button id="prev" aria-label="Previous page">↑</button><span id="pagecount">1 / 10</span><button id="next" aria-label="Next page">↓</button></div></main>
 <script>
 const scroller=document.querySelector('main'),pages=[...document.querySelectorAll('.page')],nav=document.getElementById('nav'),counter=document.getElementById('pagecount');
-let current=0,opened=false,animating=false,autoFrame=0;
+let current=0,opened=false,opening=false,animating=false,autoFrame=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function updatePosition(){
   current=Math.max(0,Math.min(pages.length-1,Math.round(scroller.scrollTop/scroller.clientHeight)));
-  nav.hidden=!opened;
+  nav.hidden=!opened || opening;
   counter.textContent=`${current+1} / ${pages.length}`;
 }
 scroller.addEventListener('scroll',updatePosition,{passive:true});
 // Only tap/buttons trigger an animated movement. Touch gestures never snap or glide.
 function scrollToPage(i,duration=700){
-  if(!opened||i<1||i>=pages.length)return;
+  if(!opened||opening||i<1||i>=pages.length)return;
   cancelAnimationFrame(autoFrame);animating=true;
   const start=scroller.scrollTop,finish=i*scroller.clientHeight;
   if(reduced){scroller.scrollTop=finish;animating=false;return}
@@ -42,12 +42,12 @@ function scrollToPage(i,duration=700){
 // No threshold, inertial fling, or automatic jump to another page.
 let touching=false,lastY=0;
 scroller.addEventListener('touchstart',e=>{
-  if(!opened||!e.touches.length)return;
+  if(!opened||opening||!e.touches.length)return;
   cancelAnimationFrame(autoFrame);animating=false;
   touching=true;lastY=e.touches[0].clientY;
 },{passive:true});
 scroller.addEventListener('touchmove',e=>{
-  if(!opened||!touching||!e.touches.length)return;
+  if(!opened||opening||!touching||!e.touches.length)return;
   if(e.cancelable)e.preventDefault();
   const y=e.touches[0].clientY;
   scroller.scrollTop+=(lastY-y);
@@ -57,24 +57,41 @@ scroller.addEventListener('touchend',()=>{touching=false;updatePosition()},{pass
 scroller.addEventListener('touchcancel',()=>{touching=false;updatePosition()},{passive:true});
 // Mouse-wheel scrolling is continuous, without snapping.
 scroller.addEventListener('wheel',e=>{
-  if(!opened)return;
+  if(!opened||opening)return;
   if(e.cancelable)e.preventDefault();
   cancelAnimationFrame(autoFrame);animating=false;
   scroller.scrollTop+=e.deltaY;
 },{passive:false});
 document.getElementById('open').addEventListener('click',()=>{
-  if(opened)return;
+  if(opened||opening)return;
+  opening=true;
   document.querySelector('.doors').classList.add('opened');
+  // The doors open first. The welcome page then glides into view automatically.
+  // Gesture control becomes available only once that reveal has finished.
   setTimeout(()=>{
-    opened=true;
     scroller.style.overflowY='auto';
-    scrollToPage(1,reduced?0:2200);
-  },reduced?250:2700);
+    const start=scroller.scrollTop, finish=scroller.clientHeight;
+    const duration=reduced?0:2600;
+    const began=performance.now();
+    const reveal=now=>{
+      const t=duration?Math.min(1,(now-began)/duration):1;
+      const ease=t*t*(3-2*t);
+      scroller.scrollTop=start+(finish-start)*ease;
+      if(t<1)autoFrame=requestAnimationFrame(reveal);
+      else{
+        scroller.scrollTop=finish;
+        opening=false;
+        opened=true;
+        updatePosition();
+      }
+    };
+    autoFrame=requestAnimationFrame(reveal);
+  },reduced?200:2700);
 });
 document.getElementById('prev').addEventListener('click',()=>scrollToPage(Math.max(1,current-1)));
 document.getElementById('next').addEventListener('click',()=>scrollToPage(current+1));
 document.addEventListener('keydown',e=>{
-  if(!opened)return;
+  if(!opened||opening)return;
   if(e.key==='ArrowDown'||e.key==='PageDown'){e.preventDefault();scrollToPage(Math.min(current+1,pages.length-1))}
   if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();scrollToPage(Math.max(current-1,1))}
 });
