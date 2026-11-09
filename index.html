@@ -1,8 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#400915"><title>Attinder P Singh & Ruchi Kairem | Wedding Invitation</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cinzel:wght@400;500;600&display=swap" rel="stylesheet"><style>
 :root{--gold:#f1d291;--wine:#420717}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#26030c;color:var(--gold);font-family:Georgia,serif}button{font:inherit}main{position:relative;width:100%;height:100dvh;overflow-y:hidden;overflow-x:hidden;overscroll-behavior-y:contain;scroll-snap-type:none;scroll-behavior:auto;touch-action:pan-y;-webkit-overflow-scrolling:touch}.page{position:relative;display:flex;align-items:center;justify-content:center;width:100vw;height:100dvh;min-height:100dvh;flex-shrink:0;background:#400815;overflow:hidden}.page:not(.doors):not(.countpage){padding:0;margin:0;border:0}.art{position:absolute;inset:0;display:block;width:100%;height:100%;min-width:100%;min-height:100%;max-width:none;max-height:none;object-fit:contain;object-position:50% 50%;background:transparent;z-index:1}.page:not(.countpage) .art{filter:saturate(1.04)}
-.page:has(>.art){background:#370716}
-.page:has(>.art)::before{content:"";position:absolute;inset:-30px;background-image:var(--page-image);background-position:center;background-size:cover;filter:blur(25px) brightness(.5);transform:scale(1.06);pointer-events:none}
-/* Avoid covering important date and text on full-frame posters. */
+.page:has(>.art){background:#370716;height:auto;min-height:0;display:block;overflow:visible}
+.page:has(>.art)::before{content:none}
+/* Show complete poster at its original ratio; no fixed-height letterboxing. */
+.page:has(>.art)>.art{position:relative;inset:auto;display:block;width:100%;height:auto;min-width:0;min-height:0;max-width:100%;max-height:none;object-fit:initial;object-position:initial}
 .nav{display:none!important}.countpage{background:radial-gradient(ellipse at center,#720c20,#3b0311 75%)}.countwrap{height:min(93dvh,900px);width:min(94vw,560px);border:1.5px solid #e8bf79;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 12px;gap:clamp(24px,5vh,50px)}.countwrap:before{content:'';position:absolute;inset:7px;border:1px solid #a97948;pointer-events:none}.counttitle{font-family:'Great Vibes',cursive;font-size:clamp(46px,11vw,75px);text-align:center;line-height:1.2;text-shadow:0 2px 7px #0008}.counttitle small{display:block;font-size:.62em}.countgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(5px,1.7vw,12px);width:100%}.timebox{border:1px solid #edc77e;border-radius:9px;min-width:0;text-align:center;padding:15px 2px}.timebox strong{display:block;font:clamp(22px,7vw,45px) Georgia,serif}.timebox span{font:clamp(8px,2vw,12px) Cinzel,serif;letter-spacing:.02em}.countdate{font:clamp(17px,5vw,28px) Cinzel,serif;text-align:center}.doors{background:#200409}.door-half{position:absolute;top:0;bottom:0;width:50%;background-image:url('assets/doors.jpg');background-size:200% 100%;transition:transform 2.7s cubic-bezier(.55,.02,.2,1);box-shadow:inset 0 0 30px #0008}.leftdoor{left:0;background-position:left}.rightdoor{right:0;background-position:right}.doors.opened .leftdoor{transform:translateX(-103%)}.doors.opened .rightdoor{transform:translateX(103%)}.doorlabel{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);background:#3b0917db;border:1px solid var(--gold);border-radius:30px;color:var(--gold);padding:13px 25px;white-space:nowrap;letter-spacing:.15em;font:13px Cinzel,serif;z-index:2;cursor:pointer}.doors.opened .doorlabel{opacity:0;pointer-events:none}.dust{position:fixed;inset:0;pointer-events:none;z-index:4;overflow:hidden}.particle{position:absolute;top:-8vh;left:var(--x);width:var(--size);height:var(--size);border-radius:70% 15% 75% 20%;background:#b94b67;opacity:.4;animation:fall var(--duration) linear var(--delay) infinite}.particle.gold{border-radius:50%;background:#ffe5a1;box-shadow:0 0 7px #eebf68}.countpage .particle{display:none}@keyframes fall{to{transform:translate3d(38px,115vh,0) rotate(440deg)}}.nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;z-index:8;background:#300717cc;border:1px solid #d7ad7288;border-radius:40px;padding:5px 10px;backdrop-filter:blur(6px)}.nav[hidden]{display:none}.nav button{width:38px;height:38px;border:1px solid #d7ad72;border-radius:50%;background:#4b1020;color:var(--gold);font-size:20px;cursor:pointer}.nav span{font:12px Cinzel,serif;min-width:48px;text-align:center}.swipe{position:absolute;bottom:70px;color:#f6d8a6aa;font:10px Cinzel,serif;letter-spacing:.15em;z-index:3;text-align:center;width:100%;pointer-events:none}@keyframes hint{to{opacity:.3;transform:translateY(-7px)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
 </style></head><body><main aria-label="Attinder and Ruchi wedding invitation">
 <section class="page doors active" aria-label="Tap to open"><div class="door-half leftdoor"></div><div class="door-half rightdoor"></div><button class="doorlabel" id="open">TAP TO OPEN</button></section>
@@ -21,7 +22,7 @@ const scroller=document.querySelector('main'),pages=[...document.querySelectorAl
 let current=0,opened=false,opening=false,animating=false,autoFrame=0;
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
 function updatePosition(){
-  current=Math.max(0,Math.min(pages.length-1,Math.round(scroller.scrollTop/scroller.clientHeight)));
+  current=Math.max(0,pages.findLastIndex(p=>p.offsetTop<=scroller.scrollTop+scroller.clientHeight*.25));
   // Preserve continuous scroll position without floating navigation.
 }
 scroller.addEventListener('scroll',updatePosition,{passive:true});
@@ -29,7 +30,7 @@ scroller.addEventListener('scroll',updatePosition,{passive:true});
 function scrollToPage(i,duration=700){
   if(!opened||opening||i<1||i>=pages.length)return;
   cancelAnimationFrame(autoFrame);animating=true;
-  const start=scroller.scrollTop,finish=i*scroller.clientHeight;
+  const start=scroller.scrollTop,finish=pages[i].offsetTop;
   if(reduced){scroller.scrollTop=finish;animating=false;return}
   const started=performance.now();
   function frame(now){
@@ -51,7 +52,7 @@ document.getElementById('open').addEventListener('click',()=>{
   // Gesture control becomes available only once that reveal has finished.
   setTimeout(()=>{
     scroller.style.overflowY='auto';
-    const start=scroller.scrollTop, finish=scroller.clientHeight;
+    const start=scroller.scrollTop, finish=pages[1].offsetTop;
     const duration=reduced?0:2600;
     const began=performance.now();
     const reveal=now=>{
