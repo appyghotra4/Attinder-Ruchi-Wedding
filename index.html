@@ -88,45 +88,4 @@ document.addEventListener('keydown',e=>{
 });
 updatePosition();
 function tick(){let s=Math.max(0,Math.floor((new Date('2027-02-21T11:00:00+05:30').getTime()-Date.now())/1000));for(const [id,v] of [['days',Math.floor(s/86400)],['hours',Math.floor(s/3600)%24],['minutes',Math.floor(s/60)%60],['seconds',s%60]])document.getElementById(id).textContent=id==='days'?v:String(v).padStart(2,'0')}tick();setInterval(tick,1000);const layer=document.getElementById('dust');for(let i=0;i<29;i++){let p=document.createElement('i');p.className='particle'+(i%3===0?' gold':'');p.style.setProperty('--x',Math.random()*100+'%');p.style.setProperty('--size',(i%3===0?2+Math.random()*3:6+Math.random()*6)+'px');p.style.setProperty('--duration',(9+Math.random()*14)+'s');p.style.setProperty('--delay',(-Math.random()*22)+'s');layer.appendChild(p)}
-</script>
-
-<div id="gurbani" hidden style="position:fixed;bottom:12px;right:10px;z-index:9;width:240px;background:#400915;border:1px solid #e8bf79;border-radius:8px;padding:5px;color:#f1d291;text-align:center">
-Gurbani Kirtan
-<iframe id="musicFrame" title="Gurbani Kirtan" width="228" height="200" style="border:0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div>
-
-<script>
-const shabads=[
-["xkUDQhB7UV0",0],
-["XMC0PL-eQvM",0],
-["mqp9kOA-05E",0],
-["pyOGqZ531Ao",0],
-["2vNsHwhMjPE",0],
-["De1TqU7bgjQ",0],
-["pyOGqZ531Ao",805]
-];
-
-document.getElementById("open").addEventListener("click",function(){
-let last=-1;
-try{
-last=parseInt(localStorage.getItem("lastShabad")||"-1");
-}catch(e){}
-
-let next;
-do{
-next=Math.floor(Math.random()*shabads.length);
-}while(next===last);
-
-try{
-localStorage.setItem("lastShabad",next);
-}catch(e){}
-
-const song=shabads[next];
-document.getElementById("gurbani").hidden=false;
-document.getElementById("musicFrame").src=
-"https://www.youtube.com/embed/"+song[0]+
-"?autoplay=1&playsinline=1&start="+song[1];
-},{once:true});
-</script>
-</body>
-</html>
+</script></body></html>
